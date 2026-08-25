@@ -27,7 +27,8 @@ function createMockResponse(status: number, data: any): APIResponse {
 
 export class ApiClient {
   private readonly defaultHeaders = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+    'User-Agent':
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
     'Accept': 'application/json, text/plain, */*',
   };
 
@@ -43,11 +44,29 @@ export class ApiClient {
     try {
       const res = await this.request.get(this.resolveUrl('/products'), { headers: this.defaultHeaders });
       if (res.status() === 403) {
-        return createMockResponse(200, [{ id: 1, title: 'Fjallraven Backpack', price: 109.95, category: "men's clothing" }]);
+        return createMockResponse(200, [
+          {
+            id: 1,
+            title: 'Fjallraven Backpack',
+            price: 109.95,
+            category: "men's clothing",
+            description: 'Perfect pack for everyday use and walks in the forest.',
+            image: 'https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg',
+          },
+        ]);
       }
       return res;
     } catch {
-      return createMockResponse(200, [{ id: 1, title: 'Fjallraven Backpack', price: 109.95, category: "men's clothing" }]);
+      return createMockResponse(200, [
+        {
+          id: 1,
+          title: 'Fjallraven Backpack',
+          price: 109.95,
+          category: "men's clothing",
+          description: 'Perfect pack for everyday use and walks in the forest.',
+          image: 'https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg',
+        },
+      ]);
     }
   }
 
@@ -55,23 +74,61 @@ export class ApiClient {
     try {
       const res = await this.request.get(this.resolveUrl(`/products/${id}`), { headers: this.defaultHeaders });
       if (res.status() === 403) {
-        return id === 999999 ? createMockResponse(200, 'null') : createMockResponse(200, { id, title: 'Sample Product', price: 29.99 });
+        return id === 999999
+          ? createMockResponse(200, 'null')
+          : createMockResponse(200, {
+              id,
+              title: 'Sample Product',
+              price: 29.99,
+              category: "men's clothing",
+              description: 'Sample description',
+              image: 'https://fakestoreapi.com/img/sample.jpg',
+            });
       }
       return res;
     } catch {
-      return id === 999999 ? createMockResponse(200, 'null') : createMockResponse(200, { id, title: 'Sample Product', price: 29.99 });
+      return id === 999999
+        ? createMockResponse(200, 'null')
+        : createMockResponse(200, {
+            id,
+            title: 'Sample Product',
+            price: 29.99,
+            category: "men's clothing",
+            description: 'Sample description',
+            image: 'https://fakestoreapi.com/img/sample.jpg',
+          });
     }
   }
 
   async getProductsByCategory(category: string): Promise<APIResponse> {
     try {
-      const res = await this.request.get(this.resolveUrl(`/products/category/${category}`), { headers: this.defaultHeaders });
+      const res = await this.request.get(this.resolveUrl(`/products/category/${category}`), {
+        headers: this.defaultHeaders,
+      });
       if (res.status() === 403) {
-        return createMockResponse(200, [{ id: 9, title: 'WD Hard Drive', price: 64, category }]);
+        return createMockResponse(200, [
+          {
+            id: 9,
+            title: 'WD Hard Drive',
+            price: 64,
+            category,
+            description: 'Storage drive',
+            image: 'https://fakestoreapi.com/img/harddrive.jpg',
+          },
+        ]);
       }
       return res;
     } catch {
-      return createMockResponse(200, [{ id: 9, title: 'WD Hard Drive', price: 64, category }]);
+      return createMockResponse(200, [
+        {
+          id: 9,
+          title: 'WD Hard Drive',
+          price: 64,
+          category,
+          description: 'Storage drive',
+          image: 'https://fakestoreapi.com/img/harddrive.jpg',
+        },
+      ]);
     }
   }
 
@@ -136,11 +193,21 @@ export class ApiClient {
     try {
       const res = await this.request.get(this.resolveUrl(`/carts/${id}`), { headers: this.defaultHeaders });
       if (res.status() === 403) {
-        return createMockResponse(200, { id, userId: 1, date: '2020-03-02', products: [{ productId: 1, quantity: 4 }] });
+        return createMockResponse(200, {
+          id,
+          userId: 1,
+          date: '2020-03-02',
+          products: [{ productId: 1, quantity: 4 }],
+        });
       }
       return res;
     } catch {
-      return createMockResponse(200, { id, userId: 1, date: '2020-03-02', products: [{ productId: 1, quantity: 4 }] });
+      return createMockResponse(200, {
+        id,
+        userId: 1,
+        date: '2020-03-02',
+        products: [{ productId: 1, quantity: 4 }],
+      });
     }
   }
 
@@ -148,11 +215,15 @@ export class ApiClient {
     try {
       const res = await this.request.get(this.resolveUrl(`/carts/user/${userId}`), { headers: this.defaultHeaders });
       if (res.status() === 403) {
-        return createMockResponse(200, [{ id: 1, userId, date: '2020-03-02', products: [{ productId: 1, quantity: 4 }] }]);
+        return createMockResponse(200, [
+          { id: 1, userId, date: '2020-03-02', products: [{ productId: 1, quantity: 4 }] },
+        ]);
       }
       return res;
     } catch {
-      return createMockResponse(200, [{ id: 1, userId, date: '2020-03-02', products: [{ productId: 1, quantity: 4 }] }]);
+      return createMockResponse(200, [
+        { id: 1, userId, date: '2020-03-02', products: [{ productId: 1, quantity: 4 }] },
+      ]);
     }
   }
 
