@@ -25,7 +25,7 @@ The two apps are deliberately different services — a common, honest pattern in
 - Tagged tests (`@smoke`, `@regression`, `@api`) for selective runs
 - HTML, JSON, JUnit, and Allure reporting
 - Screenshot + video + trace capture on failure
-- Optional AI-powered failure analysis (works with zero config; upgrades automatically when `AI_API_KEY` is set)
+- Optional AI-powered failure analysis with heuristic fallback (heuristic mode fully tested with zero config; live Anthropic API mode implemented, pending end-to-end verification with a real key)
 - GitHub Actions CI matrix (chromium / firefox / webkit / api) with artifact upload
 - Docker + docker-compose for fully containerized runs
 - TypeScript strict mode, ESLint (with `eslint-plugin-playwright`), Prettier
@@ -198,7 +198,7 @@ The image is based on `mcr.microsoft.com/playwright`, which ships Node and all b
 - On every failed/timed-out test, the reporter collects the test name, error message, stack trace, screenshot path, and trace path.
 - If `AI_API_KEY` is set, that context is sent to the Anthropic API, which returns a probable root cause, a failure category (`product-bug` / `automation-bug` / `environment-issue` / `flaky-test` / `unknown`), and a suggested fix.
 - If no key is configured, a deterministic **heuristic** analyzer (pattern-matching on the error message) produces the same shape of output, so the feature — and the framework as a whole — works with zero external dependencies.
-- Output is written to `reports/ai-analysis.json` and never affects pass/fail status.
+- **Status:** The heuristic path has been run and verified against real failing tests. The `AI_API_KEY` path is implemented and calls the Anthropic API as designed, but has not yet been exercised end-to-end with a live key.
 
 ## 15. Example Test Scenarios
 
