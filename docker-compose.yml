@@ -1,0 +1,17 @@
+version: "3.9"
+
+services:
+  playwright-tests:
+    build: .
+    container_name: playwright-ecommerce-tests
+    environment:
+      - CI=true
+      - BASE_URL=${BASE_URL:-https://www.saucedemo.com}
+      - USERNAME=${USERNAME:-standard_user}
+      - PASSWORD=${PASSWORD:-secret_sauce}
+      - API_BASE_URL=${API_BASE_URL:-https://fakestoreapi.com}
+      - AI_API_KEY=${AI_API_KEY:-}
+    volumes:
+      - ./reports:/app/reports
+      - ./test-results:/app/test-results
+    command: ["npx", "playwright", "test"]
