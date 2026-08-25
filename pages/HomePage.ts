@@ -78,3 +78,4 @@ export class HomePage extends BasePage {
     return names.map((name, i) => ({ name, price: prices[i] }));
   }
 }
+
