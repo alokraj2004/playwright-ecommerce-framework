@@ -1,76 +1,47 @@
-name: Playwright E2E Tests
+name: Playwright Tests
 
 on:
   push:
-    branches: [main]
+    branches: [main, master]
   pull_request:
-    branches: [main]
-  workflow_dispatch:
+    branches: [main, master]
 
 jobs:
   test:
-    timeout-minutes: 30
+    timeout-minutes: 60
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         project: [chromium, firefox, webkit, api]
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+    env:
+      CI: 'true'
+      BASE_URL: 'https://www.saucedemo.com'
+      API_BASE_URL: 'https://fakestoreapi.com'
+      SAUCE_USERNAME: 'standard_user'
+      SAUCE_PASSWORD: 'secret_sauce'
 
-      - name: Install Node.js
-        uses: actions/setup-node@v4
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
         with:
-          node-version: 20
-          cache: npm
+          node-version: 18
+          cache: 'npm'
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps ${{ matrix.project != 'api' && matrix.project || '' }}
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
 
-      - name: Run tests
-        env:
-          BASE_URL: ${{ vars.BASE_URL }}
-          USERNAME: ${{ vars.USERNAME }}
-          PASSWORD: ${{ secrets.APP_PASSWORD }}
-          API_BASE_URL: ${{ vars.API_BASE_URL }}
-          AI_API_KEY: ${{ secrets.AI_API_KEY }}
+      - name: Run Playwright tests
         run: npx playwright test --project=${{ matrix.project }}
 
-      - name: Generate Allure report
+      - uses: actions/upload-artifact@v4
         if: always()
-        run: npx allure generate reports/allure-results --clean -o reports/allure-report || true
-
-      - name: Upload test artifacts (reports)
-        if: always()
-        uses: actions/upload-artifact@v4
         with:
           name: playwright-report-${{ matrix.project }}
-          path: |
-            reports/html-report
-            reports/allure-report
-            reports/results.json
-            reports/junit-results.xml
-            reports/ai-analysis.json
-          retention-days: 14
-
-      - name: Upload failure artifacts (screenshots/videos/traces)
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: failure-artifacts-${{ matrix.project }}
-          path: test-results/
-          retention-days: 14
-
-      - name: Publish JUnit test results
-        if: always()
-        uses: dorny/test-reporter@v1
-        with:
-          name: Playwright Results (${{ matrix.project }})
-          path: reports/junit-results.xml
-          reporter: java-junit
-          fail-on-error: false
+          path: playwright-report/
+          retention-days: 30
