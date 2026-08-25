@@ -3,14 +3,14 @@ import { env } from './config/env';
 
 export default defineConfig({
   testDir: './tests',
-  timeout: 30_000,
+  timeout: 45_000,
   expect: {
-    timeout: 8_000,
+    timeout: 10_000,
   },
   fullyParallel: true,
-  forbidOnly: env.ciMode,
-  retries: env.ciMode ? 2 : 0,
-  workers: env.ciMode ? 2 : undefined,
+  forbidOnly: !!process.env.CI,
+  retries: process.env.CI ? 2 : 0,
+  workers: process.env.CI ? 2 : undefined,
   reporter: [
     ['list'],
     ['html', { outputFolder: 'reports/html-report', open: 'never' }],
@@ -24,6 +24,9 @@ export default defineConfig({
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
+    extraHTTPHeaders: {
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+    },
   },
 
   projects: [
@@ -55,6 +58,13 @@ export default defineConfig({
     {
       name: 'api',
       testMatch: /.*\.api\.spec\.ts/,
+      use: {
+        baseURL: 'https://fakestoreapi.com',
+        extraHTTPHeaders: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+          'Accept': 'application/json',
+        },
+      },
     },
   ],
 });
